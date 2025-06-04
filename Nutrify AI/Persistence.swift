@@ -14,11 +14,15 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for i in 0..<5 {
-            let meal = Meal(context: viewContext)
-            meal.name = "Meal \(i)"
-            meal.nutrition = "Calories: \(100 + i * 10)"
-            meal.timestamp = Date()
+
+        for i in 0..<10 {
+            let newMeal = Meal(context: viewContext)
+            newMeal.name = "Sample Meal \(i)"
+            newMeal.calories = 0
+            newMeal.protein = 0
+            newMeal.carbs = 0
+            newMeal.fat = 0
+            newMeal.timestamp = Date()
         }
         do {
             try viewContext.save()

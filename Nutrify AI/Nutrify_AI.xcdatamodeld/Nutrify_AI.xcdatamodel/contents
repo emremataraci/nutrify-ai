@@ -4,12 +4,17 @@
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <entity name="Meal" representedClassName="Meal" syncable="YES" codeGenerationType="class">
-        <attribute name="name" optional="NO" attributeType="String" usesScalarValueType="NO"/>
-        <attribute name="nutrition" optional="YES" attributeType="String" usesScalarValueType="NO"/>
+
+        <attribute name="name" optional="YES" attributeType="String" usesScalarValueType="NO"/>
+        <attribute name="calories" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <attribute name="protein" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <attribute name="carbs" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <attribute name="fat" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <elements>
         <element name="Item" positionX="-63" positionY="-18" width="128" height="44"/>
-        <element name="Meal" positionX="100" positionY="0" width="128" height="44"/>
+
+        <element name="Meal" positionX="0" positionY="0" width="128" height="44"/>
     </elements>
 </model>

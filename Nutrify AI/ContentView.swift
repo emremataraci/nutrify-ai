@@ -17,7 +17,7 @@ struct ContentView: View {
     private var meals: FetchedResults<Meal>
 
     @State private var selectedMeal: Meal?
-    @State private var showingForm = false
+
 
     var body: some View {
         NavigationView {
@@ -35,6 +35,7 @@ struct ContentView: View {
                     .onTapGesture {
                         selectedMeal = meal
                         showingForm = true
+
                     }
                 }
                 .onDelete(perform: deleteMeals)
@@ -46,6 +47,7 @@ struct ContentView: View {
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { selectedMeal = nil; showingForm = true }) {
+
                         Label("Add Meal", systemImage: "plus")
                     }
                 }
@@ -58,19 +60,40 @@ struct ContentView: View {
         }
     }
 
-    private func deleteMeals(offsets: IndexSet) {
+
+    private func addMeal() {
         withAnimation {
-            offsets.map { meals[$0] }.forEach(viewContext.delete)
-            saveContext()
+            let newMeal = Meal(context: viewContext)
+            newMeal.name = "New Meal"
+            newMeal.calories = 0
+            newMeal.protein = 0
+            newMeal.carbs = 0
+            newMeal.fat = 0
+            newMeal.timestamp = Date()
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
         }
     }
 
-    private func saveContext() {
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+    private func deleteMeals(offsets: IndexSet) {
+        withAnimation {
+            offsets.map { meals[$0] }.forEach(viewContext.delete)
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
         }
     }
 }
