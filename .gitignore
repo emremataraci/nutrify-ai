@@ -1,0 +1,7 @@
+# Xcode build directories
+build/
+DerivedData/
+
+# User-specific Xcode data
+*.xcuserdatad
+xcuserdata/
