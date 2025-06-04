@@ -16,35 +16,50 @@ struct ContentView: View {
         animation: .default)
     private var meals: FetchedResults<Meal>
 
+    @State private var selectedMeal: Meal?
+
+
     var body: some View {
         NavigationView {
             List {
                 ForEach(meals) { meal in
-                    NavigationLink {
+                    VStack(alignment: .leading) {
                         Text(meal.name ?? "Unnamed")
-                    } label: {
-                        VStack(alignment: .leading) {
-                            Text(meal.name ?? "Unnamed")
-                            Text(meal.timestamp!, formatter: itemFormatter)
-                                .font(.caption)
+                            .font(.headline)
+                        if let nutrition = meal.nutrition, !nutrition.isEmpty {
+                            Text(nutrition)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
+                    }
+                    .onTapGesture {
+                        selectedMeal = meal
+                        showingForm = true
+
                     }
                 }
                 .onDelete(perform: deleteMeals)
             }
+            .navigationTitle("Meals")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-                ToolbarItem {
-                    Button(action: addMeal) {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { selectedMeal = nil; showingForm = true }) {
+
                         Label("Add Meal", systemImage: "plus")
                     }
                 }
             }
+            .sheet(isPresented: $showingForm) {
+                MealFormView(meal: selectedMeal)
+                    .environment(\.managedObjectContext, viewContext)
+            }
             Text("Select a meal")
         }
     }
+
 
     private func addMeal() {
         withAnimation {
@@ -82,13 +97,6 @@ struct ContentView: View {
         }
     }
 }
-
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
 
 #Preview {
     ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
