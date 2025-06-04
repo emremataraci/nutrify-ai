@@ -12,40 +12,49 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Meal.timestamp, ascending: true)],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var meals: FetchedResults<Meal>
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(items) { item in
+                ForEach(meals) { meal in
                     NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+                        Text(meal.name ?? "Unnamed")
                     } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+                        VStack(alignment: .leading) {
+                            Text(meal.name ?? "Unnamed")
+                            Text(meal.timestamp!, formatter: itemFormatter)
+                                .font(.caption)
+                        }
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .onDelete(perform: deleteMeals)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                    Button(action: addMeal) {
+                        Label("Add Meal", systemImage: "plus")
                     }
                 }
             }
-            Text("Select an item")
+            Text("Select a meal")
         }
     }
 
-    private func addItem() {
+    private func addMeal() {
         withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+            let newMeal = Meal(context: viewContext)
+            newMeal.name = "New Meal"
+            newMeal.calories = 0
+            newMeal.protein = 0
+            newMeal.carbs = 0
+            newMeal.fat = 0
+            newMeal.timestamp = Date()
 
             do {
                 try viewContext.save()
@@ -58,9 +67,9 @@ struct ContentView: View {
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteMeals(offsets: IndexSet) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
+            offsets.map { meals[$0] }.forEach(viewContext.delete)
 
             do {
                 try viewContext.save()
